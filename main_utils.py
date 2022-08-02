@@ -244,15 +244,10 @@ def load_data_msmarco(args):
         )
     else:
         df = pd.read_csv(
-            args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_train_query_newid.tsv',
-            names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                   "bert_64_k10_c10",
-                   "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
+            args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_train_doc_newid.tsv',
+            names=["query", "queryid", "bert_512_k10_c100"],
             encoding='utf-8', header=None, sep='\t',
-            dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                   'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                   'bert_512_fuzzy_1': str,
-                   'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
+            dtype={'query': str, 'queryid': str, 'bert_512_k10_c100': str}).loc[:,
              ["query", "queryid", args.id_class]]
         assert not df.isnull().values.any()
         result = tuple(
@@ -274,16 +269,10 @@ def load_data_msmarco(args):
                 enumerate(zip(gq_df1["query"], gq_df1[args.id_class])))
         else:
             gq_df1 = pd.read_csv(
-                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_train_qg_newid_div{}.tsv'.format(
-                    args.nq_qgnum),
-                names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                       "bert_64_k10_c10",
-                       "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
+                args.data_dir + 'NQ_dataset/' + args.id_method + '/NQ_doc_qg.tsv',
+                names=["query", "queryid", "bert_512_k10_c100"],
                 encoding='utf-8', header=None, sep='\t',
-                dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                       'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                       'bert_512_fuzzy_1': str,
-                       'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
+                dtype={'query': str, 'queryid': str, 'bert_512_k10_c100': str}).loc[:,
                      ["query", "queryid", args.id_class]]
             gq_df1 = gq_df1.dropna(axis=0)
             result_add1 = tuple(
@@ -291,29 +280,8 @@ def load_data_msmarco(args):
                 enumerate(zip(gq_df1["query"], gq_df1[args.id_class], gq_df1["queryid"])))
             filiter_none1 = list(result_add1)
             result_add1 = tuple(list(filter(None, filiter_none1)))
-        # part2
-        if not args.msmarco:
-            gq_df2 = pd.read_csv(
-                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_dev_qg_newid_div{}.tsv'.format(
-                    args.nq_qgnum),
-                names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                       "bert_64_k10_c10",
-                       "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
-                encoding='utf-8', header=None, sep='\t',
-                dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                       'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                       'bert_512_fuzzy_1': str,
-                       'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
-                     ["query", "queryid", args.id_class]]
-            gq_df2 = gq_df2.dropna(axis=0)
-            # assert not gq_df2.isnull().values.any()
-            result_add2 = tuple(
-                process_func1(index, *row) for index, row in
-                enumerate(zip(gq_df2["query"], gq_df2[args.id_class], gq_df2["queryid"])))
-            filiter_none2 = list(result_add2)
-            result_add2 = tuple(list(filter(None, filiter_none2)))
 
-        result = result + result_add1 if args.msmarco else result + result_add1 + result_add2
+        result = result + result_add1
 
     return result
 
@@ -329,29 +297,10 @@ def load_data_msmarco_infer(args):
                 header=None, sep='\t', dtype={'query': str, 'k10_c10': str}).loc[:, ["query", args.id_class]]
         else:
             df = pd.read_csv(
-                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_dev_query_newid.tsv',
-                names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                       "bert_64_k10_c10",
-                       "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
+                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_dev_doc_newid.tsv',
+                 names=["query", "queryid", "bert_512_k10_c100"],
                 encoding='utf-8', header=None, sep='\t',
-                dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                       'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                       'bert_512_fuzzy_1': str,
-                       'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
-                 ["query", "queryid", args.id_class]]
-
-    elif args.test_set == 'clean_dev':
-        if not args.msmarco:
-            df = pd.read_csv(
-                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_dev_query_newid_clean.tsv',
-                names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                       "bert_64_k10_c10",
-                       "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
-                encoding='utf-8', header=None, sep='\t',
-                dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                       'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                       'bert_512_fuzzy_1': str,
-                       'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
+                dtype={'query': str, 'queryid': str, 'bert_512_k10_c100': str}).loc[:,
                  ["query", "queryid", args.id_class]]
 
     assert not df.isnull().values.any()

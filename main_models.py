@@ -130,27 +130,17 @@ class T5FineTuner(pl.LightningModule):
         builder = TreeBuilder()
         if not args.msmarco:
             df_train = pd.read_csv(
-                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_train_query_newid.tsv',
-                names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                       "bert_64_k10_c10",
-                       "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
+                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_train_doc_newid.tsv',
+                names=["query", "queryid", "bert_512_k10_c100"],
                 encoding='utf-8', header=None, sep='\t',
-                dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                       'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                       'bert_512_fuzzy_1': str,
-                       'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
-                       ["query", args.id_class]]
+                dtype={'query': str, 'queryid': str, 'bert_512_k10_c100': str}).loc[:,
+                ["query", "queryid", args.id_class]]
             df_dev = pd.read_csv(
-                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_dev_query_newid.tsv',
-                names=["query", "queryid", "randid", "randstrid", "bert_512_k10_c100", "bert_512_k10_c10",
-                       "bert_64_k10_c10",
-                       "bert_512_fuzzy_1", "bert_512_fuzzy_3", "bert_512_fuzzy_5"],
+                args.data_dir + 'NQ_dataset/' + args.id_method + '/nq_dev_doc_newid.tsv',
+                names=["query", "queryid", "bert_512_k10_c100"],
                 encoding='utf-8', header=None, sep='\t',
-                dtype={'query': str, 'queryid': str, 'randid': str, 'randstrid': str, 'bert_512_k10_c100': str,
-                       'bert_512_k10_c10': str, 'bert_64_k10_c10': str,
-                       'bert_512_fuzzy_1': str,
-                       'bert_512_fuzzy_3': str, 'bert_512_fuzzy_5': str}).loc[:,
-                     ["query", args.id_class]]
+                dtype={'query': str, 'queryid': str, 'bert_512_k10_c100': str}).loc[:,
+                    ["query", "queryid", args.id_class]]
             df = pd.merge(df_train, df_dev, how='outer')
         else:
             df_train = pd.read_csv(

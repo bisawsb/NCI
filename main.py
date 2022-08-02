@@ -205,7 +205,7 @@ def parsers_parser():
                          'old_id (just id, max_output_length = 8, label_length_cutoff = 0), '
                          'processed_NQ (Chengmin k-means), max_output_length = 12, label_length_cutoff = 0,'
                          'univ_NQ, all ids.')
-    parser.add_argument('--id_class', type=str, default='randid',
+    parser.add_argument('--id_class', type=str, default='bert_512_k10_c100',
                         help="randid, randstrid, bert_512_k10_c100, bert_512_k10_c10, bert_64_k10_c10")
     parser.add_argument('--ckpt_monitor', type=str, default='recall1', choices=['recall1', 'avg_train_loss'])
     parser.add_argument('--Rdrop', type=float, default=0.01, help='default to 0, 0.2')
@@ -276,7 +276,7 @@ def parsers_parser():
             parser_args.label_length_cutoff = 0
         elif parser_args.id_class == 'bert_512_k10_c100':
             if parser_args.msmarco:
-                    parser_args.max_output_length = 12
+                parser_args.max_output_length = 12
             else:
                 parser_args.max_output_length = 9
             parser_args.label_length_cutoff = 0
